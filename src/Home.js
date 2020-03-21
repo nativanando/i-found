@@ -1,33 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, DeviceEventEmitter, StatusBar, SafeAreaView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  DeviceEventEmitter,
+  StatusBar,
+  SafeAreaView,
+} from 'react-native';
 import Beacons from 'react-native-beacons-manager';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const home = () => {
-
-  const [identifier, setIdentifier] = useState('GemTot for iOS');
-  const [uuid, setUuid] = useState('6665542b-41a1-5e00-931c-6a82db9b78c1');
+  const [identifier, setIdentifier] = useState('ibeacon');
+  const [uuid, setUuid] = useState(null);
   const [bluetoothState, setBluetoothState] = useState('');
+  const [beaconFound, setBeaconFound] = useState('');
 
   useEffect(() => {
     const region = {
       identifier: identifier,
-      uuid: uuid
+      uuid: uuid,
     };
 
-    Beacons.detectIBeacons()
+    Beacons.detectIBeacons();
 
-    Beacons
-      .startRangingBeaconsInRegion(region)
+    Beacons.startRangingBeaconsInRegion(identifier, null)
       .then(() => console.log('Beacons ranging started succesfully'))
-      .catch(error => console.log(`Beacons ranging not started, error: ${error}`));
+      .catch(error =>
+        console.log(`Beacons ranging not started, error: ${error}`),
+      );
 
-    DeviceEventEmitter.addListener(
+    const BeaconEvent = DeviceEventEmitter.addListener(
       'beaconsDidRange',
-      (data) => {
+      data => {
         console.log(data);
-      }
+        setBeaconFound(
+          `Beacon with the identifier ${data.identifier} and the data ${data.beacons.length}`,
+        );
+      },
     );
+
+    return () => {
+      Beacons.stopMonitoringForRegion(region) // or like  < v1.0.7: .stopMonitoringForRegion(identifier, uuid)
+        .then(() => console.log('Beacons monitoring stopped succesfully'))
+        .catch(error =>
+          console.log(`Beacons monitoring not stopped, error: ${error}`),
+        );
+      BeaconEvent.remove();
+    };
   });
 
   return (
@@ -39,16 +59,14 @@ const home = () => {
             <Text style={styles.textColor}>
               Bluetooth connetado: {bluetoothState ? bluetoothState : 'NA'}
             </Text>
-            <Text style={styles.headline}>
-              Dispositivos próximos
-        </Text>
+            <Text style={styles.headline}>Dispositivos próximos</Text>
+            <Text style={styles.headline}>{beaconFound}</Text>
           </View>
         </View>
       </SafeAreaView>
     </>
   );
-
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -60,19 +78,19 @@ const styles = StyleSheet.create({
   },
   btleConnectionStatus: {
     fontSize: 20,
-    paddingTop: 20
+    paddingTop: 20,
   },
   headline: {
     fontSize: 20,
     paddingTop: 20,
-    color: Colors.white
+    color: Colors.white,
   },
   row: {
     padding: 8,
-    paddingBottom: 16
+    paddingBottom: 16,
   },
   smallText: {
-    fontSize: 11
+    fontSize: 11,
   },
   scrollView: {
     backgroundColor: Colors.lighter,
@@ -124,8 +142,7 @@ const styles = StyleSheet.create({
   },
   textColor: {
     color: Colors.white,
-  }
+  },
 });
-
 
 export default home;

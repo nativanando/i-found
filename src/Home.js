@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Footer from './Footer';
 
 const home = () => {
   const [identifier, setIdentifier] = useState('ibeacon');
@@ -52,7 +53,7 @@ const home = () => {
 
   return (
     <>
-      <StatusBar backgroundColor="#84769a" barStyle="light-content" />
+      <StatusBar backgroundColor="#161c2e" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
           <View style={styles.content}>
@@ -62,6 +63,7 @@ const home = () => {
             <Text style={styles.headline}>Dispositivos próximos</Text>
             <Text style={styles.headline}>{beaconFound}</Text>
           </View>
+          <Footer footerText="I-Found Inc. 2020"></Footer>
         </View>
       </SafeAreaView>
     </>
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   body: {
-    backgroundColor: '#563d7c',
+    backgroundColor: '#161c2e',
     height: '100%',
     width: '100%',
   },
@@ -131,14 +133,6 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
   },
   textColor: {
     color: Colors.white,

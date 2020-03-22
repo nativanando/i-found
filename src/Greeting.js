@@ -5,7 +5,6 @@
  * @format
  * @flow
  */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -16,9 +15,10 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Footer from './Footer';
+import ImageLogo from './ImageLogo';
 
 const Greeting = ({navigation}) => {
   const requestLocationPermission = async () => {
@@ -32,9 +32,8 @@ const Greeting = ({navigation}) => {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
-            title: 'I-Found Tracking',
-            message:
-              'We need to access to your location to found your devices!!',
+            title: 'I-Found',
+            message: 'We need to access your location to find your devices!!',
           },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -49,23 +48,27 @@ const Greeting = ({navigation}) => {
   };
   return (
     <>
-      <StatusBar backgroundColor="#84769a" barStyle="light-content" />
+      <StatusBar backgroundColor="#161c2e" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
+          <View style={styles.header}>
+            <ImageLogo />
+          </View>
           <View style={styles.content}>
             <Button
               large
               icon={<Icon name="search" size={15} color="white" />}
               buttonStyle={{
-                backgroundColor: '#f24a58',
-                borderRadius: 20,
+                backgroundColor: '#ef6b35',
+                borderRadius: 50,
                 height: 70,
                 width: 250,
               }}
-              title=" Rastrear dispositivo! "
+              title=" Iniciar rastreamento"
               onPress={requestLocationPermission}
             />
           </View>
+          <Footer footerText="I-Found Inc. 2020"></Footer>
         </View>
       </SafeAreaView>
     </>
@@ -81,12 +84,17 @@ const styles = StyleSheet.create({
     right: 0,
   },
   body: {
-    backgroundColor: '#563d7c',
+    backgroundColor: '#161c2e',
     height: '100%',
     width: '100%',
   },
-  content: {
+  header: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -112,14 +120,6 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
   },
 });
 

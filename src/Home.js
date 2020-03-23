@@ -6,16 +6,18 @@ import {
   DeviceEventEmitter,
   StatusBar,
   SafeAreaView,
+  SectionList,
 } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Footer from './Footer';
+import {FlatList} from 'react-native-gesture-handler';
+import {ListItem} from 'react-native-elements';
 
 const home = () => {
   const [identifier, setIdentifier] = useState('ibeacon');
   const [uuid, setUuid] = useState(null);
-  const [bluetoothState, setBluetoothState] = useState('');
-  const [beaconFound, setBeaconFound] = useState('');
+  const [beacons, setBeacons] = useState([]);
 
   useEffect(() => {
     const region = {
@@ -34,10 +36,7 @@ const home = () => {
     const BeaconEvent = DeviceEventEmitter.addListener(
       'beaconsDidRange',
       data => {
-        console.log(data);
-        setBeaconFound(
-          `Beacon with the identifier ${data.identifier} and the data ${data.beacons.length}`,
-        );
+        setBeacons(data.beacons);
       },
     );
 
@@ -51,18 +50,61 @@ const home = () => {
     };
   });
 
+  const renderRangingRow = rowData => {
+    rowData.item.proximity = translateProximity(rowData.item.proximity);
+    return (
+      <View style={styles.row}>
+        <Text style={styles.smallText}>
+          Dispositivo identificado:{' '}
+          {rowData.item.uuid ? rowData.item.uuid : 'NA'}
+        </Text>
+        <Text style={styles.smallText}>
+          Major: {rowData.item.major ? rowData.item.major : 'NA'}
+        </Text>
+        <Text style={styles.smallText}>
+          Minor: {rowData.item.minor ? rowData.item.minor : 'NA'}
+        </Text>
+        <Text>
+          Força do sinal: {rowData.item.rssi ? rowData.item.rssi : 'NA'}
+        </Text>
+        <Text>
+          Proximity: {rowData.item.proximity ? rowData.item.proximity : 'NA'}
+        </Text>
+        <Text>
+          Distance:{' '}
+          {rowData.item.distance ? rowData.item.distance.toFixed(2) : 'NA'}{' '}
+          metros
+        </Text>
+      </View>
+    );
+  };
+
+  const translateProximity = proximity => {
+    if (proximity === 'immediate') {
+      proximity = 'Muito perto';
+    } else if (proximity === 'near') {
+      proximity = 'Perto';
+    } else if (proximity === 'far') {
+      proximity = 'Longe';
+    }
+    return proximity;
+  };
+
   return (
     <>
       <StatusBar backgroundColor="#161c2e" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
-          <View style={styles.content}>
-            <Text style={styles.textColor}>
-              Bluetooth connetado: {bluetoothState ? bluetoothState : 'NA'}
-            </Text>
-            <Text style={styles.headline}>Dispositivos próximos</Text>
-            <Text style={styles.headline}>{beaconFound}</Text>
-          </View>
+          {beacons.length == 0 && (
+            <View style={styles.content}>
+              <Text style={styles.text}>Nenhum dispositivo na região</Text>
+            </View>
+          )}
+          <FlatList
+            data={beacons}
+            keyExtractor={(item, index) => item + index}
+            renderItem={renderRangingRow}
+          />
           <Footer footerText="I-Found Inc. 2020"></Footer>
         </View>
       </SafeAreaView>
@@ -71,35 +113,10 @@ const home = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  btleConnectionStatus: {
-    fontSize: 20,
-    paddingTop: 20,
-  },
   headline: {
     fontSize: 20,
     paddingTop: 20,
     color: Colors.white,
-  },
-  row: {
-    padding: 8,
-    paddingBottom: 16,
-  },
-  smallText: {
-    fontSize: 11,
-  },
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
   },
   body: {
     backgroundColor: '#161c2e',
@@ -107,7 +124,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   content: {
-    flex: 1,
+    flex: 6,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -116,26 +134,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.white,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  textColor: {
-    color: Colors.white,
+  text: {
+    color: '#ef6b35',
+    fontSize: 20,
   },
 });
 

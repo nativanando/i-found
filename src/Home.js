@@ -6,18 +6,17 @@ import {
   DeviceEventEmitter,
   StatusBar,
   SafeAreaView,
-  SectionList,
 } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Footer from './Footer';
-import {FlatList} from 'react-native-gesture-handler';
-import {ListItem} from 'react-native-elements';
+import {ListItem, Card} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const home = () => {
   const [identifier, setIdentifier] = useState('ibeacon');
   const [uuid, setUuid] = useState(null);
   const [beacons, setBeacons] = useState([]);
+  const [amountOfPing, setAmountOfPing] = useState(0);
 
   useEffect(() => {
     const region = {
@@ -29,28 +28,36 @@ const home = () => {
 
     Beacons.startRangingBeaconsInRegion(identifier, null)
       .then(() => console.log('Beacons ranging started succesfully'))
-      .catch(error =>
+      .catch((error) =>
         console.log(`Beacons ranging not started, error: ${error}`),
       );
 
     const BeaconEvent = DeviceEventEmitter.addListener(
       'beaconsDidRange',
-      data => {
-        setBeacons(data.beacons);
+      (data) => {
+        if (data.beacons.length > 0) {
+          setBeacons(data.beacons);
+          setAmountOfPing(0);
+        } else if (data.beacons.length === 0 && amountOfPing < 8) {
+          setAmountOfPing(amountOfPing + 1);
+        } else if (data.beacons.length === 0 && amountOfPing === 8) {
+          setBeacons(data.beacons);
+          setAmountOfPing(0);
+        }
       },
     );
 
     return () => {
       Beacons.stopMonitoringForRegion(region) // or like  < v1.0.7: .stopMonitoringForRegion(identifier, uuid)
         .then(() => console.log('Beacons monitoring stopped succesfully'))
-        .catch(error =>
+        .catch((error) =>
           console.log(`Beacons monitoring not stopped, error: ${error}`),
         );
       BeaconEvent.remove();
     };
   });
 
-  const renderRangingRow = rowData => {
+  const renderRangingRow = (rowData) => {
     rowData.item.proximity = translateProximity(rowData.item.proximity);
     return (
       <View style={styles.row}>
@@ -79,7 +86,7 @@ const home = () => {
     );
   };
 
-  const translateProximity = proximity => {
+  const translateProximity = (proximity) => {
     if (proximity === 'immediate') {
       proximity = 'Muito perto';
     } else if (proximity === 'near') {
@@ -92,7 +99,7 @@ const home = () => {
 
   return (
     <>
-      <StatusBar backgroundColor="#161c2e" barStyle="light-content" />
+      <StatusBar backgroundColor="#21252d" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
           {beacons.length == 0 && (
@@ -100,12 +107,41 @@ const home = () => {
               <Text style={styles.text}>Nenhum dispositivo na região</Text>
             </View>
           )}
-          <FlatList
-            data={beacons}
-            keyExtractor={(item, index) => item + index}
-            renderItem={renderRangingRow}
-          />
-          <Footer footerText="I-Found Inc. 2020"></Footer>
+          {beacons.length > 0 && (
+            <View>
+              <Card
+                containerStyle={{
+                  backgroundColor: '#282e39',
+                  borderColor: '#282e39',
+                  borderRadius: 10,
+                }}
+                dividerStyle={{
+                  backgroundColor: '#282e39',
+                }}
+                titleStyle={{color: '#ffff'}}
+                title="Dispositivos">
+                {beacons.map((l, i) => (
+                  <ListItem
+                    containerStyle={{
+                      backgroundColor: '#282e39',
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                    }}
+                    subtitleStyle={{color: '#ffff'}}
+                    titleStyle={{color: '#ffff'}}
+                    rightTitleStyle={{color: '#71a202'}}
+                    key={i}
+                    // leftIcon={<Icon name="search" size={15} color="white" />}
+                    title="Dispositivo localizado"
+                    rightTitle={translateProximity(l.proximity)}
+                    subtitle={
+                      'Distancia: ' + l.distance.toFixed(2) + ' metros '
+                    }
+                  />
+                ))}
+              </Card>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </>
@@ -119,7 +155,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   body: {
-    backgroundColor: '#161c2e',
+    backgroundColor: '#21252d',
     height: '100%',
     width: '100%',
   },
@@ -129,6 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  listContent: {flex: 6},
   title: {
     textAlign: 'center',
     fontSize: 20,

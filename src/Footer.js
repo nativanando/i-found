@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {TouchableOpacity, View, Text, Linking, StyleSheet} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Footer = props => {
+const Footer = (props) => {
   const {footerText} = props;
   const {textStyle, viewStyle} = styles;
 
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#161c2e',
+    backgroundColor: '#21252d',
   },
 });
 

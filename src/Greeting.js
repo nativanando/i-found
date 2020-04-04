@@ -48,7 +48,7 @@ const Greeting = ({navigation}) => {
   };
   return (
     <>
-      <StatusBar backgroundColor="#161c2e" barStyle="light-content" />
+      <StatusBar backgroundColor="#21252d" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
           <View style={styles.header}>
@@ -77,7 +77,7 @@ const Greeting = ({navigation}) => {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: '#161c2e',
+    backgroundColor: '#21252d',
     height: '100%',
     width: '100%',
   },

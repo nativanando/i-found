@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,17 +6,53 @@ import {
   DeviceEventEmitter,
   StatusBar,
   SafeAreaView,
+  Animated,
+  Image,
 } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {ListItem, Card} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Footer from './Footer';
+
+const Box = ({backgroundColor = '#21252d', scale = 0}) => (
+  <Animated.View
+    style={[
+      {
+        backgroundColor,
+        transform: [{scale}],
+      },
+    ]}>
+    <Image
+      source={require('../assets/seraching-back.png')}
+      style={styles.imageStyle}></Image>
+    <Text style={styles.text}>Procurando Dispositivo</Text>
+  </Animated.View>
+);
+
+const usePulse = (startDelay = 500) => {
+  const scale = useRef(new Animated.Value(2.1)).current;
+
+  const pulse = () => {
+    Animated.sequence([
+      Animated.timing(scale, {toValue: 1.8}),
+      Animated.timing(scale, {toValue: 2.1}),
+    ]).start(() => pulse());
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => pulse(), startDelay);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return scale;
+};
 
 const home = () => {
   const [identifier, setIdentifier] = useState('ibeacon');
   const [uuid, setUuid] = useState(null);
   const [beacons, setBeacons] = useState([]);
   const [amountOfPing, setAmountOfPing] = useState(0);
+  const scale = usePulse();
 
   useEffect(() => {
     const region = {
@@ -104,7 +140,7 @@ const home = () => {
         <View style={styles.body}>
           {beacons.length == 0 && (
             <View style={styles.content}>
-              <Text style={styles.text}>Nenhum dispositivo na região</Text>
+              <Box scale={scale} />
             </View>
           )}
           {beacons.length > 0 && (
@@ -142,6 +178,7 @@ const home = () => {
               </Card>
             </View>
           )}
+          <Footer footerText="I-Found Inc. 2020" footerColor="#21252d"></Footer>
         </View>
       </SafeAreaView>
     </>
@@ -160,7 +197,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   content: {
-    flex: 6,
+    flex: 11,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -172,8 +209,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   text: {
-    color: '#ef6b35',
-    fontSize: 20,
+    color: '#ffff',
+    fontSize: 13,
+  },
+  imageStyle: {
+    width: 130,
+    height: 100,
   },
 });
 

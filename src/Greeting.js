@@ -12,6 +12,7 @@ import {
   View,
   StatusBar,
   PermissionsAndroid,
+  Image,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -48,27 +49,32 @@ const Greeting = ({navigation}) => {
   };
   return (
     <>
-      <StatusBar backgroundColor="#21252d" barStyle="light-content" />
+      <StatusBar backgroundColor="#3a3d41" barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.body}>
-          <View style={styles.header}>
+          {/* <View style={styles.header}>
             <ImageLogo />
           </View>
-          <View style={styles.content}>
+          */}
+          <Image
+            source={require('../assets/image_background.png')}
+            style={styles.backgroundImage}></Image>
+          <View style={styles.header}>
             <Button
               large
               icon={<Icon name="search" size={15} color="white" />}
               buttonStyle={{
-                backgroundColor: '#ef6b35',
+                backgroundColor: '#3a3d41',
                 borderRadius: 50,
-                height: 70,
-                width: 250,
+                height: 65,
+                width: 220,
               }}
-              title=" Iniciar rastreamento"
+              title="  Iniciar rastreamento"
               onPress={requestLocationPermission}
+              outline="true"
             />
           </View>
-          <Footer footerText="I-Found Inc. 2020"></Footer>
+          <Footer footerText="I-Found Inc. 2020" footerColor="#ffff"></Footer>
         </View>
       </SafeAreaView>
     </>
@@ -77,9 +83,15 @@ const Greeting = ({navigation}) => {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: '#21252d',
+    backgroundColor: '#ffff',
     height: '100%',
     width: '100%',
+  },
+  backgroundImage: {
+    flex: 2,
+    width: null,
+    height: null,
+    resizeMode: 'cover',
   },
   header: {
     flex: 1,

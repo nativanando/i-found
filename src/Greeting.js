@@ -13,6 +13,8 @@ import {
   StatusBar,
   PermissionsAndroid,
   Image,
+  ImageBackground,
+  Text,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -51,31 +53,28 @@ const Greeting = ({navigation}) => {
     <>
       <StatusBar backgroundColor="#3a3d41" barStyle="light-content" />
       <SafeAreaView>
-        <View style={styles.body}>
-          {/* <View style={styles.header}>
-            <ImageLogo />
+        <ImageBackground
+          source={require('../assets/rocket.png')}
+          style={styles.backgroundImage}>
+          <View style={styles.body}>
+            <View style={styles.header}>
+              <Button
+                large
+                icon={<Icon name="search" size={15} color="white" />}
+                buttonStyle={{
+                  backgroundColor: '#4a6c8b',
+                  borderRadius: 50,
+                  height: 55,
+                  width: 205,
+                }}
+                title="  Iniciar rastreamento"
+                onPress={requestLocationPermission}
+                outline="true"
+              />
+            </View>
+            <Footer footerText="I-Found Inc. 2020" footerColor="#ffff"></Footer>
           </View>
-          */}
-          <Image
-            source={require('../assets/image_background.png')}
-            style={styles.backgroundImage}></Image>
-          <View style={styles.header}>
-            <Button
-              large
-              icon={<Icon name="search" size={15} color="white" />}
-              buttonStyle={{
-                backgroundColor: '#3a3d41',
-                borderRadius: 50,
-                height: 65,
-                width: 220,
-              }}
-              title="  Iniciar rastreamento"
-              onPress={requestLocationPermission}
-              outline="true"
-            />
-          </View>
-          <Footer footerText="I-Found Inc. 2020" footerColor="#ffff"></Footer>
-        </View>
+        </ImageBackground>
       </SafeAreaView>
     </>
   );
@@ -83,30 +82,29 @@ const Greeting = ({navigation}) => {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: '#ffff',
     height: '100%',
     width: '100%',
+    opacity: 1,
   },
   backgroundImage: {
-    flex: 2,
-    width: null,
-    height: null,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   header: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 500,
   },
-  content: {
-    flex: 3,
-    alignItems: 'center',
+  footer: {
+    flex: 1,
     justifyContent: 'center',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 20,
-    color: Colors.white,
+    alignItems: 'center',
+    paddingTop: 200,
+    backgroundColor: 'yellow',
   },
 });
 

@@ -22,10 +22,11 @@ const Box = ({backgroundColor = '#21252d', scale = 0}) => (
       {
         backgroundColor,
         transform: [{scale}],
+        paddingLeft: 7,
       },
     ]}>
     <Image
-      source={require('../assets/seraching-back.png')}
+      source={require('../assets/search_engine.png')}
       style={styles.imageStyle}></Image>
     <Text style={styles.text}>Procurando Dispositivo</Text>
   </Animated.View>
@@ -44,7 +45,7 @@ const BoxIcon = ({backgroundColor = '#282e39', scale = 0}) => (
       size={30}
       name="arrow-down"
       type="font-awesome-5"
-      color="#f50"
+      color="#00FDAF"
     />
   </Animated.View>
 );
@@ -68,12 +69,12 @@ const usePulse = (startDelay = 500) => {
 };
 
 const usePulseIcon = (startDelay = 500) => {
-  const scale = useRef(new Animated.Value(1.5)).current;
+  const scale = useRef(new Animated.Value(1.2)).current;
 
   const pulse = () => {
     Animated.sequence([
       Animated.timing(scale, {toValue: 1.0}),
-      Animated.timing(scale, {toValue: 1.5}),
+      Animated.timing(scale, {toValue: 1.2}),
     ]).start(() => pulse());
   };
 
@@ -176,7 +177,7 @@ const home = () => {
               size={30}
               name="map-marker"
               type="font-awesome-5"
-              color="#41464e"
+              color="#00FDAF"
             />
           </View>
         </View>
@@ -187,14 +188,14 @@ const home = () => {
       <View style={styles.firstRowStyle}>
         <View style={styles.rowsFormat}>
           <View>
-            <Text style={styles.distanceText}>
+            <Text style={styles.distanceTextColor}>
               Aproximadamente {item.distance.toFixed(2)} metros
             </Text>
           </View>
         </View>
       </View>
       <View style={styles.footerRowStyle}>
-        <Text style={styles.proximityText}>
+        <Text style={styles.proximityTextColor}>
           O seu dispositivo está {translateProximity(item.proximity)}
         </Text>
       </View>
@@ -256,7 +257,7 @@ const home = () => {
                 ))}
               </Card> */}
               <View style={styles.listTitleOutSide}>
-                <Text style={styles.proximityText}>DISPOSITIVOS</Text>
+                <Text style={styles.proximityTextColor}>DISPOSITIVOS</Text>
               </View>
               <FlatList
                 style={{marginTop: 15}}
@@ -275,11 +276,6 @@ const home = () => {
 };
 
 const styles = StyleSheet.create({
-  headline: {
-    fontSize: 20,
-    paddingTop: 20,
-    color: Colors.white,
-  },
   body: {
     backgroundColor: '#21252d',
     height: '100%',
@@ -300,17 +296,17 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   text: {
-    color: '#ffff',
-    fontSize: 10,
+    color: '#00FDAF',
+    fontSize: 11,
   },
   titleTextOutSide: {
-    color: '#ffff',
+    color: '#F8F8F8',
     fontSize: 18,
     fontFamily: 'System',
   },
   imageStyle: {
-    width: 110,
-    height: 100,
+    width: 117,
+    height: 110,
   },
   list: {
     paddingHorizontal: 20,
@@ -325,8 +321,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 20,
     backgroundColor: '#282e39',
-    borderColor: '#282e39',
-    borderRadius: 10,
+    borderRadius: 12,
   },
   listTitleOutSide: {
     flexDirection: 'column',
@@ -334,11 +329,11 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingBottom: 0,
   },
-  distanceText: {
-    color: '#ffff',
+  distanceTextColor: {
+    color: '#F8F8F8',
   },
-  proximityText: {
-    color: '#71a202',
+  proximityTextColor: {
+    color: '#00FDAF',
   },
   titleRowStyle: {
     height: 50,
